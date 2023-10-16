@@ -1,0 +1,229 @@
+<html>
+<head>
+  <title>Weather App</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia&effect=neon|outline|emboss|shadow-multiple">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<style>
+    
+    h1 {
+      font-size: 50px;
+      font-weight: 600;
+      text-align: center;
+      margin: 40px 0;
+      margin-bottom: 80px;
+      text-shadow: 1px 1px 2px white, 0 0 1em blue, 0 0 0.2em blue;
+    }
+    
+    h1:hover {
+      color: bluegrey;
+      font-size: 70px;
+    }
+    
+    * {
+      font-family: "Roboto", sans-serif;
+      color: #333;
+      font-size: 15px;
+    }
+    
+    body {
+      box-sizing: border-box;
+      margin: 20px;
+      padding: 20px;
+      background-image: url("https://img.freepik.com/premium-photo/abstract-white-design-background-with-smooth-wavy-lines_476363-6179.jpg");
+      background-repeat: repeat;
+      background-size: cover;
+    }
+    input[type=text] {
+      margin: 10px;
+      size: 20px;
+      width: 50%;
+      border-radius: 5px;
+      line-height: 20px;
+      padding: 10px;
+      border: 1px solid #333;
+      float: center;
+      display: none;
+    }
+  
+      select {
+      margin: 40px;
+      size: 20px;
+      width: 50%;
+      border-radius: 5px;
+      line-height: 20px;
+      padding: 10px;
+      border: 1px solid #333;
+      float: center;
+      align-items: center;   
+     }
+    
+    select:hover {
+      size: 20px;
+      width: 60%;
+      border-radius: 5px;
+      line-height: 20px;
+      padding: 12px;
+      border: 1px solid #333;
+    }
+    
+    button {
+      padding: 10px 0px;
+      background: lightgrey;
+      width: 10%;
+      border-radius: 5px;
+      color: #000;
+      font-weight: 600;
+      font-size: 14px;
+      align-items: center;
+      float:center;
+      margin: 50px;
+      margin-top: 20px;
+      text-align: center;
+  }
+    .weather-icon {
+      float: center;
+      margin-top: 50px;
+      width: 200px;
+      animation-name: rotate;
+      animation-duration: 0.7s;
+  }
+  
+    .weather-icon:hover {
+      animation-play-state: running;
+    }
+
+    @keyframes rotate {
+      0% {
+        transform: rotate(0);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+    
+    button:hover {
+      padding: 15px 5px;
+      background: bluegrey;
+      float: center;
+      width: 15%;
+      border-radius: 5px;
+  }
+
+  .temperature, .condition, .city {
+    font-size: 40px;
+    font-weight: 700;
+    margin: 40px;
+  }
+  
+  .condition, .city {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 10px;
+    margin-left: 40px;
+  }
+  
+  footer {
+    font-size: 10px;
+  }
+    </style>
+  
+<body>
+  <div class="weather-container">
+    <h1>Weather App</h1>
+
+    <input type="text" placeholder="Enter city name...">
+    <select id="country-select">
+      <!-- Options for each country will be added by JavaScript -->
+    </select>
+    <button>Get Weather</button>
+<img src="https://i.pinimg.com/originals/43/f5/bb/43f5bbaf17d061377206243140e855d8.gif" style="width: 70px">
+      <span class="w3-right"><img class="weather-icon" alt=""></span>
+    <span class="w3-left"><div class="weather-info">
+      <p class="temperature"></p>
+      <p class="condition"></p>
+      <p class="city"></p></span>
+    </div>
+  </div>
+    <footer class="w3-opacity w3-hover-opacity-off w3-hover-animate-zoom w3-bottom w3-center w3-margin">
+    <h6 class="fa fa-github w3-center"></h6><span class="w3-small w3-center"><b class="w3-small w3-center"> Powered by: @Meow.Nalini98 </b></span>
+    </footer>  
+  <script>
+    // Replace YOUR_API_KEY with your own API key
+    const apiKey = "dba49c44ff36b5a71b9344048affe481";
+
+    const select = document.querySelector("#country-select");
+
+    // Fetch the list of countries and populate the select dropdown
+    fetch("https://restcountries.com/v2/all")
+      .then(response => response.json())
+      .then(data => {
+        // Loop through the data and create an option for each country
+        data.forEach(country => {
+          const option = document.createElement("option");
+          option.value = country.alpha2Code;
+          option.textContent = country.name;
+          select.appendChild(option);
+        });
+      });
+
+    const button = document.querySelector("button");
+    button.addEventListener("click", function() {
+      const input = document.querySelector("input");
+      const cityName = input.value;
+      const countryCode = select.value;
+
+      // Send a request to the API using the fetch() method
+      fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName},${countryCode}&units=imperial&appid=${apiKey}`)
+        .then(response => response.json())
+        .then(data => {
+          // Update the weather info on the page
+          const temp = document.querySelector(".temperature");
+          const condition = document.querySelector(".condition");
+          const city = document.querySelector(".city");
+          const weatherIcon = document.querySelector(".weather-icon");
+
+          temp.textContent = Math.floor((`${data.main.temp}`-32)*5/9)+"∘C";
+          condition.textContent = data.weather[0].main;
+          city.textContent = data.name;
+
+          // Update the image source based on the weather condition
+          if (data.weather[0].main === "Clear") {
+            weatherIcon.src = "https://media3.giphy.com/media/1nawEuymm71ppSgbxD/giphy.gif";
+            weatherIcon.alt = "Clear";
+          } else if (data.weather[0].main === "Rain") {
+            weatherIcon.src = "https://media2.giphy.com/media/Y01NGpNAZ6JUNfrMPy/200w.gif?cid=82a1493b132t8acj13087u74vwueq4vkaikbuiaaqkb8oh03&ep=v1_gifs_related&rid=200w.gif&ct=s";
+            weatherIcon.alt = "Rain";
+          } else if (data.weather[0].main === "Clouds") {
+            weatherIcon.src = "https://media.baamboozle.com/uploads/images/56920/1619453109_19492_gif-url.gif";
+            weatherIcon.alt = "Clouds";
+          } else if (data.weather[0].main === "Thunderstorm") {
+            weatherIcon.src = "https://media4.giphy.com/media/XUQrufWHU1ThHweX89/giphy.gif";
+            weatherIcon.alt = "Thunderstorm";
+          } else if (data.weather[0].main === "Snow") {
+            weatherIcon.src = "https://media0.giphy.com/media/HIhtmxHJ7uQR8DrwRt/200w.gif?cid=82a1493betctzosr6c6uakr75wt8nxdwmfquezh6559pqhb6&rid=200w.gif&ct=s";
+            weatherIcon.alt = "Snow";
+          } else {
+            weatherIcon.src = "https://cdn.dribbble.com/users/1583590/screenshots/6460655/plan.gif";
+            weatherIcon.alt = "Unknown";
+          }
+        })
+        .catch(error => {
+          // Handle errors with a friendly message
+          console.error(error);
+          const weatherInfo = document.querySelector(".weather-info");
+          weatherInfo.innerHTML = "<p>Couldn't get the weather for that location. Please try again.</p>";
+        });
+    });
+  </script>
+  
+</body>
+</html>
